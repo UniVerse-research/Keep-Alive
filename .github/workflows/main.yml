@@ -2,14 +2,23 @@ name: Keep Render App Awake
 
 on:
   schedule:
-    # Runs every 14 minutes
-    - cron: '*/14 * * * *'  # Every 14th minute of the hour
+    # Runs every 5 minutes
+    - cron: '*/5 * * * *'  # This will trigger every 5 minutes
 
 jobs:
   keep_awake:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Send request to Render URL
+      - name: Check if it's the 14-minute interval
         run: |
-          curl -X GET "https://searxng-json.onrender.com/search?q=test&format=json"
+          # Get the current minute of the hour
+          current_minute=$(date +%M)
+
+          # Only run the curl request when it's a multiple of 14 (i.e., 0, 14, 28, 42, 56)
+          if [[ "$current_minute" == "00" || "$current_minute" == "14" || "$current_minute" == "28" || "$current_minute" == "42" || "$current_minute" == "56" ]]; then
+            echo "Sending request to Render URL..."
+            curl -X GET "https://searxng-json.onrender.com/search?q=test&format=json"
+          else
+            echo "Not the correct time to hit the URL. Skipping."
+          fi
