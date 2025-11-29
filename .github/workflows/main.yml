@@ -1,0 +1,15 @@
+name: Keep Render App Awake
+
+on:
+  schedule:
+    # Runs every 14 minutes
+    - cron: '*/14 * * * *'  # Every 14th minute of the hour
+
+jobs:
+  keep_awake:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send request to Render URL
+        run: |
+          curl -X GET "https://searxng-json.onrender.com/search?q=test&format=json"
